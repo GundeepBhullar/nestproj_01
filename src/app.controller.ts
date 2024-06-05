@@ -30,7 +30,11 @@ export class AppController {
     @Body('email')email: string,
     @Body('password')password: string
   )  {
-   
+    console.log('Login request recieved:', { email, password} );
+
+    if(!email || !password) {
+      throw new BadRequestException('Email and password must be provided');
+    }
     const user = await this.appService.findOne({email})
     
     if (!user) {

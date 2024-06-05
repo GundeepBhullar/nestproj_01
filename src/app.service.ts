@@ -14,9 +14,13 @@ export class AppService {
   }
 
   async findOne(condition: any): Promise<User> {
-    
+    if (!condition || Object.keys(condition).length === 0) {
+      throw new Error('You must provide selection condition in order to find a single row.');
+    }
+    console.log('Searching for user with condition:', condition);
     return this.userRepository.findOne({
-      where:[{email:condition}]
+      // where:[{email:condition}]
+      where: condition 
     });
   }
   
