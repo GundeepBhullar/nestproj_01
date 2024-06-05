@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 //import { AuthModule } from './auth/auth.module';
 import { User, } from './user/entities/user.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -20,7 +21,11 @@ import { User, } from './user/entities/user.entity';
       logging: true,
     }),
     UserModule,
-    TypeOrmModule.forFeature([User])
+    TypeOrmModule.forFeature([User]),
+    JwtModule.register({
+      secret: 'secret',
+      signOptions: {expiresIn: '1d'}
+    })
     // AuthModule,
   ],
   controllers: [AppController],
