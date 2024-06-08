@@ -1,4 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+
+
+import { Like } from 'src/like/like.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -23,6 +26,9 @@ export class User {
 
     @Column({ type: 'enum', nullable: true, enum: ['m', 'f', 'u']})
     gender?: string;
+
+    @OneToMany(() => Like, like => like.user)
+    likes: Like[];
 }
 
 // @Entity('users')
