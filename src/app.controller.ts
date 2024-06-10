@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Render, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { AppService } from './app.service';
 import { register } from 'module';
 import path from 'path';
@@ -11,6 +11,12 @@ import { Response, Request, response } from 'express';
 
 @Controller('api')
 export class AppController {
+  @Get()
+  @Render('index')
+  getMovies() {
+    const movies = [];
+    return {movies};
+  }
   constructor(
     private readonly appService: AppService,
     private jwtService: JwtService

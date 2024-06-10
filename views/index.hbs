@@ -1,0 +1,85 @@
+!<DOCTYPE html>
+    <html>
+        <head>
+            <title>Movies</title>
+        </head>
+        <body>
+            <div id="login">
+                <h2>Login</h2>
+                <form id="login-form">
+                    <input type="text" id="username" placeholder="Username">
+                    <input type="password" id="password" placeholder="Password">
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+            <div id="movies" style="display: none;">
+                <h2>Movies</h2>
+                <table id="movie-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each movies}}
+                        <tr>
+                            <td>{{this.name}}</td>
+                            <td><button onclick="likeMovie({{this.id}})">Like</button>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            <script>
+                document.getElementById('login-form').addEventListener('submit', async(e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+
+                    const response = await fetch('/api/login'), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password}),
+                  //  });
+
+                    if (response.ok) {
+                        const { access_token } = response.json();
+                        localStorage.setItem('token', access_token);
+                        document.getElementById('login').style.display = 'none';
+                        document.getElementById('movies').style.display = 'block';
+                        loadMovies();
+                    } else {
+                        alert('Login failed');
+                    }
+                    });
+
+                    async function loadMovies() {
+                        const response = await fetch('/movie', {
+                            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`},
+
+                        });
+
+                        const movies = await response.json();
+                        const tbody = document.getElementById('movies-table').querySelector('tbody');
+                        tbody.innerHTML = '';
+                        movies.forEach(movie => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `<td>${movie.name}<td><td><button onclick="likeMovie(${movie.id})">Like</button></td>`;
+                            tbody.append(tr);
+                        });
+                    }
+
+                    async function likeMovie(movieId) {
+                        await fetch(`/like/${movieId}`, {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`},
+
+                        });
+                        alert('Movie liked!')
+                    }
+
+            </script>
+        </body>
+    </html>

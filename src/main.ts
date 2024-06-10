@@ -3,10 +3,15 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import * as hbs from 'hbs';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useStaticAssets(join('/index.html', '..', 'public'));
+  app.useStaticAssets(join(__dirname, '..', 'public'));
+  
+  app.setBaseViewsDir(join(__dirname, '..', 'views'));
+
+  app.setViewEngine('hbs');
   
   app.use(cookieParser());
   // app.enableCors({
@@ -16,6 +21,6 @@ async function bootstrap() {
   // )
 
 
-  await app.listen(3000);
+  await app.listen(8080);
 }
 bootstrap();
